@@ -1,4 +1,4 @@
-"""UserThoughts init — 从模板初始化 .ustht/ 目录。
+"""user-thoughts init — 从模板初始化 .ustht/ 目录。
 
 用法:
     python init.py [--help]
@@ -52,7 +52,7 @@ def main():
 
     skill_dir = find_skill_dir()
     if skill_dir is None:
-        print("错误：未找到 SKILL.md。请确保脚本位于 UserThoughts/scripts/ 目录下。")
+        print("错误：未找到 SKILL.md。请确保脚本位于 user-thoughts/scripts/ 目录下。")
         sys.exit(1)
 
     template = skill_dir / "assets" / "Runtime-Template"

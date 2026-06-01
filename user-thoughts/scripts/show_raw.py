@@ -1,4 +1,4 @@
-"""UserThoughts raw — 显示未处理的 raw 文件。
+"""user-thoughts raw — 显示未处理的 raw 文件。
 
 用法:
     python show_raw.py [--help]

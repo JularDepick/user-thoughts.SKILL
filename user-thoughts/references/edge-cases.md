@@ -86,7 +86,7 @@ Agent：已初始化。.ustht/ 目录已存在，跳过创建。
 
 ```
 用户：/ustht status
-Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 14:00 | raw: 3 | mdbase: 5
+Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 14:00 | raw: 3 | dims: 5
 
 用户：看看状态
 Agent：同上（自然语言触发）
@@ -306,7 +306,7 @@ Agent：已导出到 #export/rules.md
 Agent：已导出全部维度文件到 #export/。
 ```
 
-### 24. 自然语言混合
+### 24. 自然语言混合（多语言）
 
 ```
 用户：看看 mdbase 里规则怎么写的
@@ -317,7 +317,18 @@ Agent：已执行硬维护。（自然语言触发 resort）
 
 用户：想法库有什么
 Agent：（输出 README.ai.md 索引，自然语言触发 mdbase show）
+
+用户：show me the rules
+Agent：（输出 rules.md 内容，英文自然语言触发 show --rules）
+
+用户：organize my thoughts
+Agent：已执行软维护。（英文自然语言触发 sortin）
+
+ユーザー：想法を整理して
+Agent：已执行软维护。（日文自然语言触发 sortin）
 ```
+
+自然语言触发不限于中文——任何语言的等效表述均可触发对应命令。Agent 匹配用户意图，而非特定语言的关键词。
 
 ### 25. SKILL 关闭时的命令行为
 
@@ -370,13 +381,13 @@ Agent：已执行软维护，6 条追加到 mdbase。
 
 ```
 用户：/ustht status
-Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 14:00 | raw: 3 | mdbase: 5
+Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 14:00 | raw: 3 | dims: 5
 
 用户：/ustht sortin
 Agent：已执行软维护，3 条追加到 mdbase。
 
 用户：/ustht status
-Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 15:30 | raw: 0 | mdbase: 5
+Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 15:30 | raw: 0 | dims: 5
 ```
 
 ### 29. 忽略区间内执行命令
@@ -469,7 +480,7 @@ Agent：已执行软维护。SKILL 已关闭。
 
 ```
 用户：/ustht status && sortin --dry
-Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 14:00 | raw: 3 | mdbase: 5
+Agent：SKILL_STATUS=on | INSTANT_STATUS=off | LAST_SORTIN=2026-05-28 14:00 | raw: 3 | dims: 5
   预览模式：
   → ui/details.md: +1 条
   共 1 条，不实际写入。

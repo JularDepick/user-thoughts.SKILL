@@ -1,8 +1,8 @@
 <div align="center">
 
-# UserThoughts.SKILL
+# user-thoughts.SKILL
 
-[![Version](https://img.shields.io/badge/Version-0.1.1-blue)](https://github.com/JularDepick/UserThoughts.SKILL/releases)
+[![Version](https://img.shields.io/badge/Version-0.2.0-blue)](https://github.com/JularDepick/user-thoughts.SKILL/releases)
 [![Copyright](https://img.shields.io/badge/Copyright-JularDepick-0066AA)](./COPYRIGHT)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 [![Standard](https://img.shields.io/badge/Standard-Agent--SKILL-red)](https://agentskills.io/)
@@ -27,7 +27,7 @@
 - **接手断裂** — 切换 Agent 或交接协作者时，接手方完全不了解用户的积累，只能猜、只能重新问、只能偏离
 - **重复摩擦** — 用户不得不跨会话反复解释同样的决策和偏好，消磨信任和节奏
 
-UserThoughts.SKILL 通过维护一个**持久化、绑定项目的想法文档库**来解决这个问题——它跨越会话边界，在 Agent 之间干净地传递：
+user-thoughts.SKILL 通过维护一个**持久化、绑定项目的想法文档库**来解决这个问题——它跨越会话边界，在 Agent 之间干净地传递：
 
 - **捕获**：对话中自动识别并记录用户想法
 - **组织**：按维度整理为结构化文档库 (mdbase)
@@ -36,11 +36,11 @@ UserThoughts.SKILL 通过维护一个**持久化、绑定项目的想法文档�
 
 任何接手项目的 Agent 只需读取 `mdbase/`，就能立刻理解用户要什么、决定了什么、有什么约束——无需重新推导。
 
-### 示例：有无 UserThoughts 的对比
+### 示例：有无 user-thoughts 的对比
 
 **场景** — 用户花 3 个会话定义了一个 Web 应用的认证方案、UI 风格和技术栈。然后开新会话（或交给另一个 Agent）来实现登录页。
 
-**没有 UserThoughts：**
+**没有 user-thoughts：**
 
 ```
 会话 1:  用户: "用 OAuth2，别用 JWT。上个项目吃过 token 过期的亏。"
@@ -54,10 +54,10 @@ UserThoughts.SKILL 通过维护一个**持久化、绑定项目的想法文档�
 
 新会话从零开始，之前所有决策全部丢失。
 
-**有 UserThoughts：**
+**有 user-thoughts：**
 
 ```
-会话 1-3: UserThoughts 静默记录到 .ustht/mdbase/
+会话 1-3: user-thoughts 静默记录到 .ustht/mdbase/
           ├── details/rules.md     → "不用 JWT，用 OAuth2。上个项目有 token 过期问题。"
           ├── details/ui/details.md → "暗色主题优先。圆角 8px。"
           └── details/dev-stack.md  → "Next.js + Prisma。不要 MongoDB。"
@@ -89,13 +89,13 @@ UserThoughts.SKILL 通过维护一个**持久化、绑定项目的想法文档�
 
 ### 安装方式
 
-将 `UserThoughts/` 目录放入 Agent 的技能文件夹。具体路径取决于你的 Agent：
+将 `user-thoughts/` 目录放入 Agent 的技能文件夹。具体路径取决于你的 Agent：
 
 | Agent | 技能目录 |
 |-------|---------|
-| VS Code / Copilot | `.agents/skills/UserThoughts/` |
-| Claude Code | `.claude/skills/UserThoughts/` |
-| OpenCode | `.opencode/skills/UserThoughts/` |
+| VS Code / Copilot | `.agents/skills/user-thoughts/` |
+| Claude Code | `.claude/skills/user-thoughts/` |
+| OpenCode | `.opencode/skills/user-thoughts/` |
 | 其他 | 参考对应 Agent 文档 |
 
 安装后，Agent 通过 `SKILL.md` 的 YAML frontmatter 自动发现技能。
@@ -147,7 +147,7 @@ UserThoughts.SKILL 通过维护一个**持久化、绑定项目的想法文档�
 ## 技能结构
 
 ```
-UserThoughts/
+user-thoughts/
 ├── SKILL.md                    # 入口（frontmatter + 核心指令）
 ├── references/                 # 详细规范（按需加载）
 │   ├── commands.md             # 命令正则与自然语言映射
@@ -201,7 +201,14 @@ UserThoughts/
 /ustht import <路径>                       # 扫描路径下 .md 文件，并入 mdbase
 ```
 
-命令也可通过自然语言触发——当用户的表述明确指向某一命令时（如"看看规则" → `/ustht mdbase show rules`、"整理一下想法" → `/ustht sortin`），Agent 直接执行等效命令。详细映射规则见 [references/commands.md](references/commands.md)。
+命令也可通过**任何语言**的自然语言触发——当用户的表述明确指向某一命令时，Agent 直接执行等效命令。示例：
+
+- 中文："看看规则" → `/ustht mdbase show rules`
+- English: "organize my thoughts" → `/ustht sortin`
+- 日本語：「想法を整理して」→ `/ustht sortin`
+- 한국어: "상태 보여줘" → `/ustht status`
+
+Agent 匹配的是**意图**，而非特定关键词。详细映射规则见 [references/commands.md](references/commands.md)。
 
 ---
 
@@ -236,11 +243,11 @@ UserThoughts/
 
 ## 开发
 
-本仓库包含技能本体（`UserThoughts/`）及其文档。
+本仓库包含技能本体（`user-thoughts/`）及其文档。
 
 ```
-UserThoughts.SKILL/
-├── UserThoughts/           # 技能本体（安装到 Agent 的技能目录）
+user-thoughts.SKILL/
+├── user-thoughts/          # 技能本体（安装到 Agent 的技能目录）
 │   ├── SKILL.md            # 入口文件（YAML frontmatter + 核心指令）
 │   ├── references/         # 按需加载的详细规范
 │   ├── scripts/            # Python 脚本（供 Agent 调用）
@@ -259,7 +266,7 @@ UserThoughts.SKILL/
 
 ## 更新日志
 
-版本历史请参阅 [GitHub Releases](https://github.com/JularDepick/UserThoughts.SKILL/releases)。
+版本历史请参阅 [GitHub Releases](https://github.com/JularDepick/user-thoughts.SKILL/releases)。
 
 ---
 

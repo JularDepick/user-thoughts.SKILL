@@ -1,8 +1,8 @@
 <div align="center">
 
-# UserThoughts.SKILL
+# user-thoughts.SKILL
 
-[![Version](https://img.shields.io/badge/Version-0.1.1-blue)](https://github.com/JularDepick/UserThoughts.SKILL/releases)
+[![Version](https://img.shields.io/badge/Version-0.2.0-blue)](https://github.com/JularDepick/user-thoughts.SKILL/releases)
 [![Copyright](https://img.shields.io/badge/Copyright-JularDepick-0066AA)](./COPYRIGHT)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 [![Standard](https://img.shields.io/badge/Standard-Agent--SKILL-red)](https://agentskills.io/)
@@ -27,7 +27,7 @@ Every new session or agent starts from zero. The original user's intent, accumul
 - **Agent handoff loss** — When switching agents or onboarding a collaborator, the successor has no access to the user's accumulated thinking. They guess, they ask again, they deviate.
 - **Repeated friction** — Users must re-explain the same decisions and preferences across sessions, eroding trust and momentum.
 
-UserThoughts.SKILL solves this by maintaining a **persistent, project-bound idea repository** that survives session boundaries and transfers cleanly between agents:
+user-thoughts.SKILL solves this by maintaining a **persistent, project-bound idea repository** that survives session boundaries and transfers cleanly between agents:
 
 - **Capturing** user thoughts automatically during conversations
 - **Organizing** them into a structured document library (mdbase) by dimension
@@ -36,11 +36,11 @@ UserThoughts.SKILL solves this by maintaining a **persistent, project-bound idea
 
 Any agent picking up the project reads `mdbase/` and immediately understands what the user wants, what they've decided, and what constraints apply — no re-derivation needed.
 
-### Example: Without vs. With UserThoughts
+### Example: Without vs. With user-thoughts
 
 **Scenario** — A user spends 3 sessions defining a web app's auth flow, UI style, and tech stack. Then they open a new session (or hand off to another agent) to implement the login page.
 
-**Without UserThoughts:**
+**Without user-thoughts:**
 
 ```
 Session 1:  User: "Use OAuth2, not JWT. We got burned by token expiry last project."
@@ -54,10 +54,10 @@ Session 4:  [New session / different agent]
 
 The new session starts from scratch. All prior decisions are gone.
 
-**With UserThoughts:**
+**With user-thoughts:**
 
 ```
-Session 1-3: UserThoughts silently records to .ustht/mdbase/
+Session 1-3: user-thoughts silently records to .ustht/mdbase/
              ├── details/rules.md    → "No JWT. Use OAuth2. Prior project had token expiry issues."
              ├── details/ui/details.md → "Dark theme first. Rounded corners, 8px radius."
              └── details/dev-stack.md  → "Next.js + Prisma. No MongoDB — need relational integrity."
@@ -89,13 +89,13 @@ The idea repository bridges the gap. The new agent inherits the user's full deci
 
 ### How to Install
 
-Place the `UserThoughts/` directory in your agent's skills folder. The exact path depends on your agent:
+Place the `user-thoughts/` directory in your agent's skills folder. The exact path depends on your agent:
 
 | Agent | Skills Directory |
 |-------|-----------------|
-| VS Code / Copilot | `.agents/skills/UserThoughts/` |
-| Claude Code | `.claude/skills/UserThoughts/` |
-| OpenCode | `.opencode/skills/UserThoughts/` |
+| VS Code / Copilot | `.agents/skills/user-thoughts/` |
+| Claude Code | `.claude/skills/user-thoughts/` |
+| OpenCode | `.opencode/skills/user-thoughts/` |
 | Generic | Check your agent's documentation |
 
 After installation, the agent discovers the skill automatically via the YAML frontmatter in `SKILL.md`.
@@ -147,7 +147,7 @@ User runs /ustht mdbase show → Agent displays organized idea repository
 ## Skill Structure
 
 ```
-UserThoughts/
+user-thoughts/
 ├── SKILL.md                    # Entry point (frontmatter + core instructions)
 ├── references/                 # Detailed specs (loaded on demand)
 │   ├── commands.md             # Command regex & natural language mapping
@@ -201,7 +201,14 @@ UserThoughts/
 /ustht import <path>                       # Scan .md files at path, merge into mdbase
 ```
 
-Commands can also be triggered by natural language — when the user's wording clearly maps to a single command (e.g. "show me the rules" → `/ustht mdbase show rules`, "整理一下想法" → `/ustht sortin`), the agent executes the equivalent command directly. Detailed mapping rules are defined in [references/commands.md](references/commands.md).
+Commands can also be triggered by natural language in **any language** — when the user's wording clearly maps to a single command, the agent executes the equivalent command directly. Examples:
+
+- English: "show me the rules" → `/ustht mdbase show rules`
+- Chinese: "整理一下想法" → `/ustht sortin`
+- Japanese: "想法を整理して" → `/ustht sortin`
+- Korean: "상태 보여줘" → `/ustht status`
+
+The agent matches **intent**, not specific keywords. Detailed mapping rules are defined in [references/commands.md](references/commands.md).
 
 ---
 
@@ -236,11 +243,11 @@ After first use, the skill creates `.ustht/` in your working directory:
 
 ## Development
 
-This repository contains the skill source (`UserThoughts/`) and its documentation.
+This repository contains the skill source (`user-thoughts/`) and its documentation.
 
 ```
-UserThoughts.SKILL/
-├── UserThoughts/           # Skill body (installed to agent's skills directory)
+user-thoughts.SKILL/
+├── user-thoughts/          # Skill body (installed to agent's skills directory)
 │   ├── SKILL.md            # Entry point with YAML frontmatter + core instructions
 │   ├── references/         # Detailed specs loaded on demand
 │   ├── scripts/            # Python scripts for agent use
@@ -259,7 +266,7 @@ UserThoughts.SKILL/
 
 ## Changelog
 
-See [GitHub Releases](https://github.com/JularDepick/UserThoughts.SKILL/releases) for version history.
+See [GitHub Releases](https://github.com/JularDepick/user-thoughts.SKILL/releases) for version history.
 
 ---
 

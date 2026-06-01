@@ -1,4 +1,4 @@
-"""UserThoughts status — 显示当前 SKILL 运行状态。
+"""user-thoughts status — 显示当前 SKILL 运行状态。
 
 用法:
     python status.py [--help]
@@ -12,7 +12,7 @@ from common import find_ustht, read_define_ini
 
 HELP = """用法: python status.py [--help]
 
-显示当前 UserThoughts 运行状态。
+显示当前 user-thoughts 运行状态。
 
 输出格式:
   SKILL_STATUS=... | INSTANT_STATUS=... | LAST_SORTIN=... | raw: N | dims: N

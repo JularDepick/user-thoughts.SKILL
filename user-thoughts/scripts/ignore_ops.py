@@ -1,10 +1,11 @@
-"""UserThoughts ignore — 忽略操作。
+"""user-thoughts ignore — 忽略操作。
 
 用法:
     python ignore_ops.py show              # 显示被忽略的记录
     python ignore_ops.py remove_last       # 删除最后一条 raw 条目，移入 ignored/
     python ignore_ops.py add_suffix "text" # 添加后缀忽略条目
 """
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -107,7 +108,14 @@ def cmd_remove_last(ustht: Path):
 
     remove_entry_from_file(f, idx)
     append_to_ignored(ustht / "ignored", entry, "--last 忽略")
-    print("已忽略上一条想法。")
+    # 提取纯文本用于展示
+    display = entry
+    m = re.match(r"^- \[\d{2}:\d{2}\]\s*(.+)$", entry)
+    if m:
+        display = m.group(1)
+        if " | 待归入:" in display:
+            display = display.rsplit(" | 待归入:", 1)[0]
+    print(f"已忽略上一条想法：{display}")
 
 
 def cmd_add_suffix(ustht: Path, text: str):

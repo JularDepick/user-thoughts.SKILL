@@ -1,4 +1,4 @@
-"""UserThoughts toggle — 管理 SKILL 和即时计划的启用状态。
+"""user-thoughts toggle — 管理 SKILL 和即时计划的启用状态。
 
 用法:
     python toggle.py skill [on|off]      # 查看/设置 SKILL_STATUS

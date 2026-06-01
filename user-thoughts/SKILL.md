@@ -1,5 +1,5 @@
 ---
-name: UserThoughts
+name: user-thoughts
 description: >-
   Use this skill to capture and persist user decisions, design preferences,
   tech stack choices, and project constraints expressed during conversations
@@ -7,15 +7,17 @@ description: >-
   sessions and agent handoffs. Trigger when the user: discusses project
   architecture or design decisions, expresses preferences about tech stack /
   frameworks / databases / deployment, sets coding rules or conventions, states
-  UI/UX preferences, mentions '想法', '记录', 'mdbase', 'sortin', or uses
-  /UserThoughts or /ustht commands. ALWAYS activate even if the user does NOT
-  explicitly ask to 'record' — if the statement would be valuable for a future
-  agent接手此项目, capture it.
+  UI/UX preferences, mentions 'mdbase', 'sortin', 'thoughts', 'ideas',
+  '想法', '记录', '思い', '아이디어', or uses /user-thoughts or /ustht
+  commands. Natural language triggering works in ANY language — match the
+  user's intent, not specific keywords. ALWAYS activate even if the user does
+  NOT explicitly ask to 'record' — if the statement would be valuable for a
+  future agent接手此项目 (inheriting this project), capture it.
 license: MIT
 allowed-tools: read write bash
 metadata:
   author: JularDepick
-  source_repo: JularDepick/UserThoughts.SKILL
+  source_repo: JularDepick/user-thoughts.SKILL
   category: productivity
   risk: safe
   date_added: "2026-05-31"
@@ -23,26 +25,27 @@ metadata:
   supported_agents: "[claude, cursor, gemini]"
 ---
 
-# UserThoughts.SKILL
+# user-thoughts.SKILL
 
 ## 概述
 
-跨会话、跨 Agent 时，用户积累的决策和约束会彻底丢失。UserThoughts.SKILL 将这些想法持久化到 mdbase，绑定于项目而非会话——任何接手的 Agent 读取 mdbase 即可继承用户的完整意图，无需重新推导。
+跨会话、跨 Agent 时，用户积累的决策和约束会彻底丢失。user-thoughts.SKILL 将这些想法持久化到 mdbase，绑定于项目而非会话——任何接手的 Agent 读取 mdbase 即可继承用户的完整意图，无需重新推导。
 
 ## 重要声明
 
-- **本 SKILL** 系指本文档及同目录下内容，整体称 `UserThoughts.SKILL`
+- **本 SKILL** 系指本文档及同目录下内容，整体称 `user-thoughts.SKILL`
 - **用户**：使用、调用、提及本 SKILL 的发言人
 - **行为边界**：SKILL 只做想法分析和记录，不干预 Agent 对用户指令的执行。这是核心设计——当用户说"把按钮改成红色"时，Agent 应同时执行修改并记录偏好，两者并行互不干扰。记录行为不应延迟或阻塞用户的实际工作
 
 ## 何时使用
 
 - 当用户表达项目想法、设计决策、需求、规则、偏好时
-- 当用户提到"想法"、"记录"、"维护"、"mdbase"、"sortin"时
+- 当用户提到"想法"、"记录"、"维护"、"mdbase"、"sortin"或任何语言的等效表述时
 - 即使用户没有明确要求记录，只要发言中包含对项目有意义的想法，就应激活
-- 命令以 `/UserThoughts` 或 `/ustht` 引导时（详见 [references/commands.md](references/commands.md)）
+- 命令以 `/user-thoughts` 或 `/ustht` 引导时（详见 [references/commands.md](references/commands.md)）
+- 自然语言触发兼容任何语言——Agent 应匹配用户意图，而非特定语言的关键词
 
-**命令前缀**：`/UserThoughts` 为完整前缀，`/ustht` 为简写，两者等价可互换。
+**命令前缀**：`/user-thoughts` 为完整前缀，`/ustht` 为简写，两者等价可互换。
 
 **激活边界**：当用户发言同时包含指令和想法时（如"把这个按钮改成红色"），Agent 应执行指令并同时记录想法。仅当发言纯粹是闲聊或与项目完全无关时（如"今天天气不错"）才不激活。
 
@@ -69,7 +72,7 @@ metadata:
 - **被动模式**（`INSTANT_STATUS=off`）：仅响应技能命令，不自动识别想法
 - **即时计划模式**（`INSTANT_STATUS=on` 且 `SKILL_STATUS=on`）：自动识别用户想法并写入 `#raw/`，mdbase 写入延迟到 sortin
 - **忽略模式**：`ignore start`/`end` 区间内发言不记入
-- **只读模式**（必需工具缺失时）：只读命令可用，写入命令返回错误
+- **只读模式**（必需工具缺失时）：只读命令可用，写入命令返回提示
 
 模式组合：即时计划 + 忽略可同时生效。`SKILL_STATUS=off` 时即时计划自动暂停，无论 `INSTANT_STATUS` 值如何。被动/即时计划通过 define.ini 持久化；忽略区间仅上下文有效。
 
@@ -77,9 +80,9 @@ metadata:
 
 ## 目录定义
 
-- `@/`：SKILL 安装目录（SKILL.md 所在目录，即 `UserThoughts/`）
+- `@/`：SKILL 安装目录（SKILL.md 所在目录，即 `user-thoughts/`）
 - `~/`：工作目录
-- `#ustht/` = `~/.ustht/`（`.ustht` 是 `UserThoughts` 的运行时缩写）
+- `#ustht/` = `~/.ustht/`（`.ustht` 是 `user-thoughts` 的运行时缩写）
 - `#mdbase/` = `~/.ustht/mdbase/`
 - `#ignored/` = `~/.ustht/ignored/`
 - `#raw/` = `~/.ustht/raw/`
@@ -123,7 +126,7 @@ metadata:
 
 SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：mdbase 维护涉及多文件读写，SubAgent 可并行处理各维度文件，显著减少主 Agent 的上下文占用和执行时间。SubAgent 不可用时主 Agent 才直接执行。
 
-必需工具缺失时向用户发出警告，SKILL 进入只读模式：`mdbase show`、`raw`、`status` 等只读命令仍可用，`sortin`、`ignore`、`init` 等写入命令返回错误提示。
+必需工具缺失时向用户发出警告，SKILL 进入只读模式：`mdbase show`、`raw`、`status`、`ignore show` 等只读命令仍可用，`sortin`、`ignore start/end`、`ignore --last`、`init` 等写入命令返回提示。
 
 ### 内置脚本
 
@@ -140,6 +143,8 @@ SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：
 | `write_raw.py` | 写入 raw 条目 | `python @/scripts/write_raw.py "想法" [--dim 维度]` |
 | `toggle.py` | 切换状态 | `python @/scripts/toggle.py skill\|instant [on\|off]` |
 | `ignore_ops.py` | 忽略操作 | `python @/scripts/ignore_ops.py show\|remove_last\|add_suffix` |
+
+> **resort（硬维护）** 无独立脚本——该操作需要 Agent 语义分析（去重、归类、合并），由 Agent 直接执行。
 
 脚本自动检测工作目录下的 `.ustht/`，无需手动指定路径。所有脚本支持 `--help` 参数查看详细用法。优先使用脚本处理机械性操作，将 Agent 的上下文留给语义分析（如维度归类）。
 
@@ -159,12 +164,12 @@ SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：
 
 ## 技能命令
 
-命令以 `/UserThoughts` 或 `/ustht` 引导，两者等价。完整正则语法和自然语言映射见 [references/commands.md](references/commands.md)。
+命令以 `/user-thoughts` 或 `/ustht` 引导，两者等价。完整正则语法和自然语言映射见 [references/commands.md](references/commands.md)。
 
 ### 状态与开关
 
 - `/ustht init` — 初始化工作目录（创建 `.ustht/` 及模板）
-- `/ustht status` — 输出全部状态（SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、raw 文件数、mdbase 维度文件数）
+- `/ustht status` — 输出全部状态（SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、未处理 raw 数、mdbase 维度文件数）
 - `/ustht skill` — 输出技能状态
 - `/ustht skill on|off` — 开启/关闭技能
 - `/ustht instant` — 输出即时计划状态
@@ -179,8 +184,9 @@ SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：
 
 - `/ustht ignore start|end` — 开始/结束忽略区间（仅上下文有效）
 - `/ustht ignore --last` — 忽略上一条已记录的想法（从 raw 中删除该条目，记入 `#ignored/`；若 raw 文件变空，保留空文件不删除）
-- `/ustht ignore show` — 列举 `#ignored/` 目录内容
-- `.*/ustht ignore` — 后缀模式，忽略本条消息的想法（不记入 raw，记入 `#ignored/`）
+- `/ustht ignore` — 独立使用时等价于 `--last`（优先匹配全行命令正则，不触发后缀模式）
+- `/ustht ignore show` — 列举 `#ignored/` 目录内容（只读命令，SKILL 关闭时仍可用）
+- `.*/ustht ignore` — 后缀模式，忽略本条消息的想法（不记入 raw，记入 `#ignored/`；不受 SKILL_STATUS 控制）
 
 ### 内容查看与导出
 
@@ -202,7 +208,7 @@ SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：
 1. **识别**：判断用户发言是否包含项目想法、决策、需求、规则、偏好
 2. **制订计划**：写入 `#raw/` 当天日期.md，格式 `- [HH:MM] 想法原文 | 待归入:预判维度`
 3. **不执行**：不改动 mdbase，延迟到 sortin 时统一执行
-4. **过滤**：忽略区间内或末尾携带 `/ustht ignore`（或 `/UserThoughts ignore`）的发言不写入
+4. **过滤**：忽略区间内或末尾携带 `/ustht ignore`（或 `/user-thoughts ignore`）的发言不写入
 5. **不中断**：后台静默执行，不打断正常对话
 6. **自动建议**：单日 raw 条目超过 5 条时，主动建议用户执行 sortin
 
@@ -301,7 +307,7 @@ Agent 读取 .ustht/mdbase/ → 已知技术栈和 UI 偏好 → 直接实现
 
 ## 安全规范
 
-- **路径安全**：维度名仅允许 `[a-z0-9-]`，禁止 `..`、`/`、`\`——维度名会被拼接为文件路径，特殊字符可能导致路径遍历攻击。所有操作限制在 `#ustht/` 内
+- **路径安全**：维度名每段仅允许 `[a-z0-9]` 开头和结尾的 `[a-z0-9-]` 序列，支持 `/` 作为子目录分隔符（如 `ui/outline`），禁止 `..`、`\`——维度名会被拼接为文件路径，特殊字符可能导致路径遍历攻击。所有操作限制在 `#ustht/` 内
 - **内容安全**：想法原文保留不转义，`<!-- processed -->` 仅检查文件第一行——防止用户想法中的标记字符串干扰 sortin 判断
 - **define.ini 安全**：值不得含换行符或 `=`——防止键值注入。写入使用整文件覆写
 - **bash 安全**：不执行用户任意 shell 命令，文件名从已验证维度名构造——防止命令注入
@@ -320,7 +326,7 @@ Agent 读取 .ustht/mdbase/ → 已知技术栈和 UI 偏好 → 直接实现
 - **不主动删除维度文件**：用户明确要求时才标记 `<!-- deprecated -->`，不物理删除——保留历史可追溯性
 - **resort 模式**：不是只追加，而是去重、归类、合并，必要时调整结构——与 sortin 的"只追加"策略不同
 - **ignore --last 无上一条**：返回提示，不报错——静默失败比报错更符合忽略操作的语义
-- **维度名验证**：仅 `[a-z0-9-]`，含 `..`、`/`、`\` 的参数必须拒绝——防止路径遍历攻击
+- **维度名验证**：每段须以 `[a-z0-9]` 开头和结尾，仅 `[a-z0-9-]`，支持 `/` 子目录分隔，含 `..`、`\` 的参数必须拒绝——防止路径遍历攻击
 - **define.ini 写入**：值不得含换行符或 `=`，整文件覆写不追加——防止键值注入
 - **通用兜底**：无法归入已有维度的想法追加到 `general.md`，不轻易新建维度——维度膨胀会降低 mdbase 的可用性
 

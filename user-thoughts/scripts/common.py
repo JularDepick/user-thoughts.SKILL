@@ -1,4 +1,4 @@
-"""UserThoughts 共享工具函数。
+"""user-thoughts 共享工具函数。
 
 所有脚本共用的目录查找、配置读写、维度验证等函数。
 """
@@ -17,7 +17,7 @@ def find_ustht() -> Path | None:
 
 
 def find_skill_dir() -> Path | None:
-    """查找 UserThoughts 技能目录（SKILL.md 所在目录）。"""
+    """查找 user-thoughts 技能目录（SKILL.md 所在目录）。"""
     script_dir = Path(__file__).resolve().parent
     skill_dir = script_dir.parent
     if (skill_dir / "SKILL.md").exists():

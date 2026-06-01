@@ -1,4 +1,4 @@
-"""UserThoughts write_raw — 写入一条想法到当天 raw 文件。
+"""user-thoughts write_raw — 写入一条想法到当天 raw 文件。
 
 用法:
     python write_raw.py "想法内容" [--dim 维度名] [--help]
@@ -26,7 +26,7 @@ HELP = """用法: python write_raw.py "想法内容" [--dim 维度名] [--help]
 行为:
   - 若当天文件已标记 processed，自动创建带序号的新文件（如 2026-06-01-2.md）
   - 单日条目超过 5 条时，建议执行 /ustht sortin
-  - SKILL_STATUS=off 时静默退出"""
+  - SKILL_STATUS=off 时输出提示并退出"""
 
 
 def count_today_raw(raw_dir: Path) -> int:

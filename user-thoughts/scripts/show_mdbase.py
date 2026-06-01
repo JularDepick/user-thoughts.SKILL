@@ -1,4 +1,4 @@
-"""UserThoughts mdbase show — 显示 mdbase 索引或维度内容。
+"""user-thoughts mdbase show — 显示 mdbase 索引或维度内容。
 
 用法:
     python show_mdbase.py show              # 显示 README.ai.md 索引
@@ -54,7 +54,7 @@ def show_dimension(mdbase: Path, dim: str):
     Path 自动处理 `/` 作为目录分隔符。
     """
     if not validate_dim_name(dim):
-        print(f"维度名非法：{dim}。仅允许小写字母、数字和连字符。")
+        print(f"维度名非法：{dim}。每段仅允许小写字母、数字和连字符，支持 / 子目录分隔。")
         sys.exit(1)
 
     details = mdbase / "details"
