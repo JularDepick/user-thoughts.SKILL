@@ -15,8 +15,8 @@
 
 ## 文档目录
 
-| 文件 | 维度 | 内容概要 |
-|------|------|----------|
+| 文件 | 维度 | 条目数 |
+|------|------|--------|
 | [details/rules.md](details/rules.md) | 项目规则 | 用户对项目整体的规则性想法 |
 | [details/plans.md](details/plans.md) | 项目规划 | 用户对项目整体的规划性想法 |
 | [details/ui/outline.md](details/ui/outline.md) | UI 整体 | UI 整体设计想法 |

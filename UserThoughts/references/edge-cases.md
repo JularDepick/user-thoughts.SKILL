@@ -1,6 +1,7 @@
 # 边界场景与交互示例
 
 > 本文档详述 SKILL 的边界场景处理和完整交互示例。SKILL.md 中仅列关键场景概要。
+> 以下示例以中文输出为例。实际输出语言适配用户当前对话语言（见 SKILL.md 语言策略）。
 
 ---
 
@@ -29,7 +30,7 @@
 - `ignore start` 后到 `ignore end` 前的所有发言不记入计划
 - 未配对的 `ignore start` 在会话结束时自动失效
 - 忽略区间内的命令（如 `/ustht sortin`）仍正常执行，不受忽略影响
-- 嵌套的 `ignore start` 无效，忽略第一个之后的
+- 嵌套的 `ignore start` 无效，忽略第一个之后的，输出提示："已在忽略区间内"
 
 ### 即时计划与命令共存
 
@@ -256,7 +257,7 @@ Agent：已记入计划：代码细节把控 | 待归入:rules
 Agent：已忽略上一条想法"代码细节把控"。
 ```
 
-被忽略的发言从 raw 中移除该条目（整条删除），同时记入 `#ignored/yyyy-mm-dd.md`：
+被忽略的发言从 raw 中移除该条目（整条删除），同时记入 `#ignored/yyyy-mm-dd.md`。若移除后 raw 文件为空，保留空文件不删除：
 ```markdown
 - [14:45] 代码细节要把把控好（--last 忽略）
 ```
@@ -322,10 +323,16 @@ Agent：（输出 README.ai.md 索引，自然语言触发 mdbase show）
 
 ```
 用户：/ustht skill off
-Agent：SKILL 已关闭。
+Agent：SKILL 已关闭。即时计划已暂停。
 
 用户：/ustht sortin
 Agent：SKILL 已关闭，操作已忽略。
+
+用户：/ustht ignore start
+Agent：SKILL 已关闭，操作已忽略。
+
+用户：/ustht ignore show
+Agent：无被忽略的记录。（ignore show 是只读命令，仍可用）
 
 用户：/ustht mdbase show
 Agent：（正常输出索引，只读命令仍可用）
@@ -333,6 +340,10 @@ Agent：（正常输出索引，只读命令仍可用）
 用户：/ustht skill on
 Agent：SKILL 已开启。
 ```
+
+`SKILL_STATUS=off` 时，即时计划自动暂停（无论 `INSTANT_STATUS` 值）。只读命令（`mdbase show`、`raw`、`status`、`ignore show`）仍可用。
+
+**后缀模式在 SKILL 关闭时的行为**：后缀模式 `.../ustht ignore` 不受 SKILL_STATUS 控制——它是用户对当前消息的主动标记，而非 SKILL 的写入操作。即使 SKILL 关闭，后缀模式仍生效（不记入 raw，记入 `#ignored/`），以避免干扰用户的正常对话流。
 
 ### 26. 跨会话恢复
 

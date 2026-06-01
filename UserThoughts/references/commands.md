@@ -11,6 +11,7 @@
 - `(...)` 正则分组 | `(...)?` 可选分组
 - `[文字]` 仅用于描述，表示该参数可省略（非正则语法）
 - `a|b` 二选一
+- **前缀等价**：`/UserThoughts` 为完整前缀，`/ustht` 为简写，两者等价可互换。下文正则均使用 `/(UserThoughts|ustht)` 同时匹配两种形式
 
 ---
 
@@ -36,38 +37,38 @@
 
 | 命令 | 正则 | 说明 |
 |------|------|------|
-| `/ustht init` | `^/ustht init$` | 初始化工作目录，创建 `.ustht/` 及模板文件 |
-| `/ustht status` | `^/ustht status$` | 输出全部状态：SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、raw 文件数、mdbase 维度文件数 |
-| `/ustht skill` | `^/ustht skill$` | 输出 SKILL_STATUS（等价于 `/ustht skill status`） |
-| `/ustht skill on\|off` | `^/ustht skill (on\|off)$` | 执行 SKILL_STATUS=on\|off |
-| `/ustht instant` | `^/ustht instant$` | 输出 INSTANT_STATUS（等价于 `/ustht instant status`） |
-| `/ustht instant on\|off` | `^/ustht instant (on\|off)$` | 执行 INSTANT_STATUS=on\|off |
+| `/ustht init` | `^/(UserThoughts|ustht) init$` | 初始化工作目录，创建 `.ustht/` 及模板文件 |
+| `/ustht status` | `^/(UserThoughts|ustht) status$` | 输出全部状态：SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、raw 文件数、mdbase 维度文件数 |
+| `/ustht skill` | `^/(UserThoughts|ustht) skill$` | 输出 SKILL_STATUS（等价于 `/ustht skill status`） |
+| `/ustht skill on\|off` | `^/(UserThoughts|ustht) skill (on\|off)$` | 执行 SKILL_STATUS=on\|off |
+| `/ustht instant` | `^/(UserThoughts|ustht) instant$` | 输出 INSTANT_STATUS（等价于 `/ustht instant status`） |
+| `/ustht instant on\|off` | `^/(UserThoughts|ustht) instant (on\|off)$` | 执行 INSTANT_STATUS=on\|off |
 
 ### 维护流程
 
 | 命令 | 正则 | 说明 |
 |------|------|------|
-| `/ustht sortin` | `^/ustht sortin (--dry)?$` | 软维护（追加新想法），`--dry`：预览不写入 |
-| `/ustht resort` | `^/ustht resort (--dry)?$` | 硬维护（重整全部 mdbase），`--dry`：预览不写入 |
+| `/ustht sortin` | `^/(UserThoughts|ustht) sortin (--dry)?$` | 软维护（追加新想法），`--dry`：预览不写入 |
+| `/ustht resort` | `^/(UserThoughts|ustht) resort (--dry)?$` | 硬维护（重整全部 mdbase），`--dry`：预览不写入 |
 
 ### 忽略管理
 
 | 命令 | 正则 | 说明 |
 |------|------|------|
-| `/ustht ignore` | `^/ustht ignore$` | 独立使用，等价于 `--last` |
-| `/ustht ignore show` | `^/ustht ignore show$` | 列举 `#ignored/` 内容 |
-| `/ustht ignore start\|end` | `^/ustht ignore (start\|end)$` | 开始/结束忽略区间（仅上下文有效，不持久化） |
-| `/ustht ignore --last` | `^/ustht ignore (--last\|--[a-z][a-z0-9-]*)$` | `--last` 忽略上一条；`--维度名` 忽略指定想法 |
-| `... /ustht ignore` | `.*/ustht ignore$` | 后缀模式，忽略本条消息的想法 |
+| `/ustht ignore` | `^/(UserThoughts|ustht) ignore$` | 独立使用，等价于 `--last` |
+| `/ustht ignore show` | `^/(UserThoughts|ustht) ignore show$` | 列举 `#ignored/` 内容 |
+| `/ustht ignore start\|end` | `^/(UserThoughts|ustht) ignore (start\|end)$` | 开始/结束忽略区间（仅上下文有效，不持久化） |
+| `/ustht ignore --last` | `^/(UserThoughts|ustht) ignore --last$` | 忽略上一条已记录的想法 |
+| `... /ustht ignore` | `.*/(UserThoughts|ustht) ignore$` | 后缀模式，忽略本条消息的想法 |
 
 ### 内容查看与导出
 
 | 命令 | 正则 | 说明 |
 |------|------|------|
-| `/ustht raw` | `^/ustht raw$` | 查看 `#raw/` 中未处理的最新记录 |
-| `/ustht mdbase show` | `^/ustht mdbase show (--all\|--.+)?$` | 查看索引或指定维度文件 |
-| `/ustht mdbase export` | `^/ustht mdbase export (--all\|--.+)?$` | 导出到 `#export/`，默认导出全部 |
-| `/ustht import` | `^/ustht import .+$` | 扫描指定路径下 .md 文件，整理内容并入 mdbase |
+| `/ustht raw` | `^/(UserThoughts|ustht) raw$` | 查看 `#raw/` 中未处理的最新记录 |
+| `/ustht mdbase show` | `^/(UserThoughts|ustht) mdbase show (--all\|--.+)?$` | 查看索引或指定维度文件 |
+| `/ustht mdbase export` | `^/(UserThoughts|ustht) mdbase export (--all\|--.+)?$` | 导出到 `#export/`，默认导出全部 |
+| `/ustht import` | `^/(UserThoughts|ustht) import .+$` | 扫描指定路径下 .md 文件，整理内容并入 mdbase |
 
 **维度名参数验证：** `--` 后的维度名必须符合 `[a-z0-9-]`，不得含 `..`、`/`、`\`，最大 64 字符。详见 [safety.md](safety.md)。
 
@@ -75,7 +76,7 @@
 
 ## 自然语言触发映射
 
-当用户发言的自然语言意图明确指向唯一命令时，可不使用 `/ustht` 前缀直接触发。
+当用户发言的自然语言意图明确指向唯一命令时，可不使用命令前缀直接触发。`/UserThoughts` 和 `/ustht` 均可作为命令前缀。
 
 | 命令 | 自然语言示例 | 触发约束 |
 |------|-------------|---------|
@@ -109,28 +110,30 @@
 
 ## 错误处理
 
+> 以下示例以中文输出为例。实际输出语言适配用户当前对话语言（见 SKILL.md 语言策略）。
+
 ### 命令无法识别
 
 ```
 用户：/ustht blahblah
-Agent：命令无法识别。可用命令：
-  /ustht init | status | skill [on|off] | instant [on|off]
-  /ustht sortin [--dry] | resort [--dry]
-  /ustht ignore | show | start | end | [--last]
-  /ustht raw | mdbase show [--all|--维度名] | mdbase export [--all|--维度名]
-  /ustht import <路径>
+Agent：命令无法识别。可用命令（/UserThoughts 或 /ustht）：
+  init | status | skill [on|off] | instant [on|off]
+  sortin [--dry] | resort [--dry]
+  ignore | show | start | end | [--last]
+  raw | mdbase show [--all|--维度名] | mdbase export [--all|--维度名]
+  import <路径>
 ```
 
 ### 无子命令
 
 ```
 用户：/ustht
-Agent：可用命令：
-  /ustht init | status | skill [on|off] | instant [on|off]
-  /ustht sortin [--dry] | resort [--dry]
-  /ustht ignore | show | start | end | [--last]
-  /ustht raw | mdbase show [--all|--维度名] | mdbase export [--all|--维度名]
-  /ustht import <路径>
+Agent：可用命令（/UserThoughts 或 /ustht）：
+  init | status | skill [on|off] | instant [on|off]
+  sortin [--dry] | resort [--dry]
+  ignore | show | start | end | [--last]
+  raw | mdbase show [--all|--维度名] | mdbase export [--all|--维度名]
+  import <路径>
 ```
 
 ### 目录/文件不存在
@@ -198,6 +201,34 @@ Agent：无上一条想法可忽略。
 
 ```
 Agent：警告：缺少 bash 工具，SKILL 功能已暂停。请确保运行环境支持 bash 命令执行。
+```
+
+### 初始化失败
+
+```
+用户：/ustht init
+Agent：初始化失败：<具体原因>。请检查目录权限后重试。
+```
+
+### import 路径非法
+
+```
+用户：/ustht import /etc/passwd
+Agent：路径非法。导入路径必须在工作目录内，不得使用绝对路径或 .. 指向系统目录。
+```
+
+### import 目录无 .md 文件
+
+```
+用户：/ustht import empty-dir/
+Agent：empty-dir/ 下未找到 .md 文件。
+```
+
+### import 无相关内容
+
+```
+用户：/ustht import README.md
+Agent：扫描 README.md，未提取到项目想法。
 ```
 
 ---
