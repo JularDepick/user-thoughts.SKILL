@@ -69,7 +69,7 @@ def main():
         sys.exit(1)
 
     # 依赖检查：instant on 需要 SKILL_STATUS=on
-    if cmd == "instant" and val == "on" and cfg.get("SKILL_STATUS") == "off":
+    if cmd == "instant" and val == "on" and cfg.get("SKILL_STATUS", "off") != "on":
         print("SKILL 已关闭，即时计划无法开启。请先执行 /ustht skill on。")
         sys.exit(1)
 
@@ -80,7 +80,11 @@ def main():
         if val == "off":
             print("SKILL 已关闭。即时计划已暂停。")
         else:
-            print("SKILL 已开启。")
+            instant = cfg.get("INSTANT_STATUS", "off")
+            if instant == "on":
+                print("SKILL 已开启。即时计划已恢复。")
+            else:
+                print("SKILL 已开启。")
     elif cmd == "instant":
         if val == "on":
             print("即时计划已开启。")

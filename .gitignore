@@ -1,4 +1,5 @@
 .startClaude.bat
+.claude/
 .DS_Store
 Thumbs.db
 *.swp

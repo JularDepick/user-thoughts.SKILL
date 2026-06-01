@@ -38,7 +38,7 @@
 | 命令 | 正则 | 说明 |
 |------|------|------|
 | `/ustht init` | `^/(user-thoughts|ustht) init$` | 初始化工作目录，创建 `.ustht/` 及模板文件 |
-| `/ustht status` | `^/(user-thoughts|ustht) status$` | 输出全部状态：SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、raw 文件数、mdbase 维度文件数 |
+| `/ustht status` | `^/(user-thoughts|ustht) status$` | 输出全部状态：SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、未处理 raw 文件数、mdbase 维度文件数 |
 | `/ustht skill` | `^/(user-thoughts|ustht) skill$` | 输出 SKILL_STATUS（等价于 `/ustht skill status`） |
 | `/ustht skill on\|off` | `^/(user-thoughts|ustht) skill (on\|off)$` | 执行 SKILL_STATUS=on\|off |
 | `/ustht instant` | `^/(user-thoughts|ustht) instant$` | 输出 INSTANT_STATUS（等价于 `/ustht instant status`） |
@@ -172,7 +172,7 @@ Agent：参数不合法。可用值：on | off
 Agent：SKILL 已关闭，操作已忽略。使用 /ustht skill on 开启。
 
 用户：/ustht ignore start
-Agent：SKILL 已关闭，操作已忽略。
+Agent：SKILL 已关闭，操作已忽略。使用 /ustht skill on 开启。
 
 用户：/ustht status
 Agent：（正常输出状态，只读命令不受影响）

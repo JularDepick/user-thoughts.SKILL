@@ -1,25 +1,17 @@
 ---
 name: user-thoughts
 description: >-
-  Use this skill to capture and persist user decisions, design preferences,
-  tech stack choices, and project constraints expressed during conversations
-  into a project-bound idea repository (mdbase) — so knowledge survives across
-  sessions and agent handoffs. Trigger when the user: discusses project
-  architecture or design decisions, expresses preferences about tech stack /
-  frameworks / databases / deployment, sets coding rules or conventions, states
-  UI/UX preferences, mentions 'mdbase', 'sortin', 'thoughts', 'ideas',
-  '想法', '记录', '思い', '아이디어', or uses /user-thoughts or /ustht
-  commands. Natural language triggering works in ANY language — match the
-  user's intent, not specific keywords. ALWAYS activate even if the user does
-  NOT explicitly ask to 'record' — if the statement would be valuable for a
-  future agent接手此项目 (inheriting this project), capture it.
+  Persist user decisions and project constraints to mdbase across sessions.
+  Trigger on /user-thoughts or /ustht, or when user discusses architecture,
+  tech stack, rules, UI/UX, or mentions '想法', '记录', 'mdbase'.
 license: MIT
+source: JularDepick/user-thoughts.SKILL
+risk: safe
 allowed-tools: read write bash
 metadata:
   author: JularDepick
   source_repo: JularDepick/user-thoughts.SKILL
   category: productivity
-  risk: safe
   date_added: "2026-05-31"
   tags: "[userthoughts, documentation, project-management, mdbase]"
   supported_agents: "[claude, cursor, gemini]"
@@ -37,13 +29,18 @@ metadata:
 - **用户**：使用、调用、提及本 SKILL 的发言人
 - **行为边界**：SKILL 只做想法分析和记录，不干预 Agent 对用户指令的执行。这是核心设计——当用户说"把按钮改成红色"时，Agent 应同时执行修改并记录偏好，两者并行互不干扰。记录行为不应延迟或阻塞用户的实际工作
 
-## 何时使用
+## When to Use
 
-- 当用户表达项目想法、设计决策、需求、规则、偏好时
-- 当用户提到"想法"、"记录"、"维护"、"mdbase"、"sortin"或任何语言的等效表述时
-- 即使用户没有明确要求记录，只要发言中包含对项目有意义的想法，就应激活
-- 命令以 `/user-thoughts` 或 `/ustht` 引导时（详见 [references/commands.md](references/commands.md)）
-- 自然语言触发兼容任何语言——Agent 应匹配用户意图，而非特定语言的关键词
+- 用户输入 `/user-thoughts` 或 `/ustht` 命令时
+- 用户讨论架构、技术栈、规则、UI/UX 等项目决策时
+- 用户发言中提及"想法"、"记录"、"mdbase"等关键词时
+- 用户表达项目相关的需求、偏好、约束时
+
+## 使用指南
+
+- 用户发言包含项目想法、决策、需求、规则、偏好时，SKILL 自动激活
+- 命令以 `/user-thoughts` 或 `/ustht` 引导（详见 [references/commands.md](references/commands.md)）
+- 自然语言触发兼容任何语言——Agent 应匹配用户意图，而非特定关键词
 
 **命令前缀**：`/user-thoughts` 为完整前缀，`/ustht` 为简写，两者等价可互换。
 
@@ -126,7 +123,7 @@ metadata:
 
 SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：mdbase 维护涉及多文件读写，SubAgent 可并行处理各维度文件，显著减少主 Agent 的上下文占用和执行时间。SubAgent 不可用时主 Agent 才直接执行。
 
-必需工具缺失时向用户发出警告，SKILL 进入只读模式：`mdbase show`、`raw`、`status`、`ignore show` 等只读命令仍可用，`sortin`、`ignore start/end`、`ignore --last`、`init` 等写入命令返回提示。
+必需工具缺失时向用户发出警告，SKILL 进入只读模式：只读命令（`mdbase show`、`raw`、`status`、`ignore show`）仍可用，写入命令（`sortin`、`write_raw`、`ignore start/end`、`ignore --last`、`init`）返回提示。
 
 ### 内置脚本
 
@@ -169,7 +166,7 @@ SubAgent 可用时**必须使用**，不得由主 Agent 自行维护。原因：
 ### 状态与开关
 
 - `/ustht init` — 初始化工作目录（创建 `.ustht/` 及模板）
-- `/ustht status` — 输出全部状态（SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、未处理 raw 数、mdbase 维度文件数）
+- `/ustht status` — 输出全部状态（SKILL_STATUS、INSTANT_STATUS、LAST_SORTIN、未处理 raw 文件数、mdbase 维度文件数）
 - `/ustht skill` — 输出技能状态
 - `/ustht skill on|off` — 开启/关闭技能
 - `/ustht instant` — 输出即时计划状态
@@ -289,7 +286,7 @@ Agent 读取 .ustht/mdbase/ → 已知技术栈和 UI 偏好 → 直接实现
 - ✅ **用户发言优先**：明确表述都应记录，不得以 Agent 判断为由忽略——用户说了就记，这是用户的决策库，不是 Agent 的判断库
 - ✅ **不过度推断**：只记录用户明确表达或可直接推导的想法——过度推断会污染 mdbase，让用户难以分辨哪些是自己的原意
 - ✅ **保持原文**：保留用户原始表述，不简化、不改写、不丢失细节。sortin 的"格式化"仅指：去除 raw 中的时间戳前缀和 `| 待归入:维度名` 后缀，按日期分组加标题，不改动想法正文。原文中的否定句、具体数值、限定条件都是关键意图，丢失它们等于丢失决策
-- ✅ **维度归类**：优先归入已有维度，无合适维度则归入 `general.md`，待办类想法归入 `backlog.md`
+- ✅ **维度归类**：优先归入已有维度，无合适维度则归入 `general.md`，待办类想法归入 `backlog.md`（注意：`backlog.md` 存储在 `mdbase/` 根目录而非 `details/` 下，与其他维度不同）
 - ✅ **冲突处理**：以最新发言为准，原记录标注被替代并附日期——用户的决策会演进，保留历史但以最新为准
 - ✅ **单条多想法拆分**：一条消息包含多个独立想法时，拆分为多条记录——便于 sortin 按维度分别归类
 - ❌ **非项目内容不记录**：闲聊、与项目无关的话题不记入想法——mdbase 是项目决策库，不是聊天日志
@@ -334,7 +331,7 @@ Agent 读取 .ustht/mdbase/ → 已知技术栈和 UI 偏好 → 直接实现
 
 ## 边界场景
 
-- **SKILL 关闭后**：文件保留，写入类命令返回提示，只读命令仍可用
+- **SKILL 关闭后**：文件保留，写入类命令（`sortin`、`ignore start/end`、`ignore --last`、`init`）返回提示，只读命令（`mdbase show`、`raw`、`status`、`ignore show`）仍可用。后缀模式 `.../ustht ignore` 不受 SKILL_STATUS 控制
 - **跨会话恢复**：读取 define.ini 恢复状态，忽略区间不恢复
 - **多项目隔离**：各工作目录独立 `.ustht/`，互不影响
 

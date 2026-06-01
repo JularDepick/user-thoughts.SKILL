@@ -51,39 +51,51 @@ def show_dimension(mdbase: Path, dim: str):
     """显示指定维度文件内容。
 
     `dim` 可以是简单名称（如 rules）或子目录路径（如 ui/outline）。
-    Path 自动处理 `/` 作为目录分隔符。
+    backlog 位于 mdbase 根目录而非 details/ 下。
     """
     if not validate_dim_name(dim):
-        print(f"维度名非法：{dim}。每段仅允许小写字母、数字和连字符，支持 / 子目录分隔。")
+        print(f"维度名非法：{dim}。每段仅允许小写字母、数字和连字符，支持 / 子目录分隔，不得与保留名冲突。")
         sys.exit(1)
 
-    details = mdbase / "details"
-    target = details / f"{dim}.md"
+    # backlog 位于 mdbase 根目录
+    if dim == "backlog":
+        target = mdbase / "backlog.md"
+    else:
+        details = mdbase / "details"
+        target = details / f"{dim}.md"
     if target.exists():
         print(target.read_text(encoding="utf-8"))
     else:
-        print(f"mdbase/details/{dim}.md 不存在。尚未记录相关想法。")
+        print(f"{target} 不存在。尚未记录相关想法。")
 
 
 def show_all(mdbase: Path):
     """显示所有维度文件及条目数。"""
     details = mdbase / "details"
-    if not details.exists():
-        print("mdbase/details/ 目录不存在。")
-        return
+    dims = []
+    if details.exists():
+        dims = list_dimensions(details)
 
-    dims = list_dimensions(details)
-    if not dims:
+    # backlog 位于 mdbase 根目录
+    backlog = mdbase / "backlog.md"
+    has_backlog = backlog.exists()
+
+    if not dims and not has_backlog:
         print("mdbase 中无维度文件。")
         return
 
-    print(f"mdbase 共 {len(dims)} 个维度：")
+    total = len(dims) + (1 if has_backlog else 0)
+    print(f"mdbase 共 {total} 个维度：")
     for dim in dims:
         f = details / f"{dim}.md"
         if f.exists():
             content = f.read_text(encoding="utf-8")
             lines = [l for l in content.splitlines() if l.strip().startswith("- ")]
             print(f"  {dim}.md: {len(lines)} 条")
+    if has_backlog:
+        content = backlog.read_text(encoding="utf-8")
+        lines = [l for l in content.splitlines() if l.strip().startswith("- ")]
+        print(f"  backlog.md: {len(lines)} 条")
 
 
 def main():

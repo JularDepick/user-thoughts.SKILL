@@ -2,7 +2,7 @@
 
 # user-thoughts.SKILL
 
-[![Version](https://img.shields.io/badge/Version-0.2.0-blue)](https://github.com/JularDepick/user-thoughts.SKILL/releases)
+[![Version](https://img.shields.io/badge/Version-0.2.1-blue)](https://github.com/JularDepick/user-thoughts.SKILL/releases)
 [![Copyright](https://img.shields.io/badge/Copyright-JularDepick-0066AA)](./COPYRIGHT)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 [![Standard](https://img.shields.io/badge/Standard-Agent--SKILL-red)](https://agentskills.io/)
@@ -177,7 +177,7 @@ user-thoughts/
 
 ## Commands
 
-```
+```bash
 # Status & Controls
 /ustht init                                # Initialize workspace (.ustht/ and templates)
 /ustht status                              # Full status overview
@@ -220,6 +220,7 @@ After first use, the skill creates `.ustht/` in your working directory:
 <working-dir>/
 └── .ustht/
     ├── define.ini             # State & macro constants
+    ├── README.ai.md           # .ustht/ directory guide
     ├── raw/                   # User raw thoughts (date-sharded)
     │   └── yyyy-mm-dd.md
     ├── ignored/               # Ignored thoughts
@@ -234,8 +235,8 @@ After first use, the skill creates `.ustht/` in your working directory:
             ├── dev-stack.md   # Tech stack
             ├── general.md     # General (catch-all)
             ├── ui/
-            │   ├── outline.md
-            │   └── details.md
+            │   ├── outline.md       # UI outline
+            │   └── details.md       # UI details
             └── ...            # Extensible
 ```
 
@@ -273,3 +274,15 @@ See [GitHub Releases](https://github.com/JularDepick/user-thoughts.SKILL/release
 ## License
 
 [MIT](./LICENSE) — Copyright (c) 2026 JularDepick
+
+---
+
+## Community Versions
+
+See the [community-versions](https://github.com/JularDepick/user-thoughts.SKILL/tree/community-versions) branch or [Related Links](#related-links).
+
+---
+
+## Related Links
+
+- 2026-06-02 This repository has been submitted to and accepted by the community skills repository [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills/tree/main/skills/user-thoughts)

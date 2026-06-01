@@ -2,7 +2,7 @@
 
 # user-thoughts.SKILL
 
-[![Version](https://img.shields.io/badge/Version-0.2.0-blue)](https://github.com/JularDepick/user-thoughts.SKILL/releases)
+[![Version](https://img.shields.io/badge/Version-0.2.1-blue)](https://github.com/JularDepick/user-thoughts.SKILL/releases)
 [![Copyright](https://img.shields.io/badge/Copyright-JularDepick-0066AA)](./COPYRIGHT)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 [![Standard](https://img.shields.io/badge/Standard-Agent--SKILL-red)](https://agentskills.io/)
@@ -220,6 +220,7 @@ Agent 匹配的是**意图**，而非特定关键词。详细映射规则见 [re
 <工作目录>/
 └── .ustht/
     ├── define.ini             # 状态与宏常量
+    ├── README.ai.md           # .ustht/ 目录说明
     ├── raw/                   # 用户原始发言（按日期分片）
     │   └── yyyy-mm-dd.md
     ├── ignored/               # 被忽略的发言
@@ -273,3 +274,15 @@ user-thoughts.SKILL/
 ## 许可证
 
 [MIT](./LICENSE) — Copyright (c) 2026 JularDepick
+
+---
+
+## 社区版本
+
+社区版本列表请参看本仓库分支 [community-versions](https://github.com/JularDepick/user-thoughts.SKILL/tree/community-versions) 或 [相关链接](#相关链接)
+
+---
+
+## 相关链接
+
+- 2026-06-02 本仓库成功提交并入选到社区技能仓库 [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills/tree/main/skills/user-thoughts)

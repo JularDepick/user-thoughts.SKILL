@@ -9,7 +9,7 @@
 | 目录 | 用途 |
 |------|------|
 | `raw/` | 用户原始发言，按日期分片存储。即时计划模式下自动写入，sortin 处理后标记 `<!-- processed -->` |
-| `ignored/` | 被用户主动忽略的发言。通过 `ignore --last`、`ignore <想法描述>`、`ignore start/end` 区间移入 |
+| `ignored/` | 被用户主动忽略的发言。通过 `ignore --last`、`ignore`（独立使用）、后缀模式 `.../ustht ignore`、`ignore start/end` 区间移入 |
 | `mdbase/` | 整理后的用户想法库，按维度组织。由 sortin（追加）或 resort（优化结构）维护 |
 | `export/` | 从 mdbase 导出的内容，用于跨项目复用 |
 

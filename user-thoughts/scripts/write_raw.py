@@ -54,7 +54,7 @@ def main():
 
     cfg = read_define_ini(ustht)
     if cfg.get("SKILL_STATUS") == "off":
-        print("SKILL 已关闭，操作已忽略。")
+        print("SKILL 已关闭，操作已忽略。使用 /ustht skill on 开启。")
         sys.exit(0)
 
     # 解析参数
@@ -79,7 +79,7 @@ def main():
 
     # 验证维度名
     if dim and not validate_dim_name(dim):
-        print(f"维度名非法：{dim}。仅允许小写字母、数字和连字符，支持子目录。")
+        print(f"维度名非法：{dim}。每段仅允许小写字母、数字和连字符，支持 / 子目录分隔，不得与保留名冲突。")
         sys.exit(1)
 
     raw_dir = ustht / "raw"
@@ -98,9 +98,10 @@ def main():
                 seq += 1
             raw_file = raw_dir / f"{today}-{seq}.md"
 
-    # 构建条目行
+    # 构建条目行（换行替换为空格，保持单行格式）
+    thought_clean = thought.replace("\n", " ").replace("\r", "")
     suffix = f" | 待归入:{dim}" if dim else ""
-    entry = f"- [{now}] {thought}{suffix}"
+    entry = f"- [{now}] {thought_clean}{suffix}"
 
     # 追加到文件
     if raw_file.exists():

@@ -10,8 +10,9 @@
 ### SKILL 关闭后（`skill off`）
 
 - 文件全部保留，Agent 不再执行 SKILL 行为
-- 只读命令（`mdbase show`、`raw`、`status`）仍可用
-- 写入类命令（`sortin`、`ignore`）返回提示："SKILL 已关闭，操作已忽略"
+- 只读命令（`mdbase show`、`raw`、`status`、`ignore show`）仍可用
+- 写入类命令（`sortin`、`ignore start/end`、`ignore --last`、`init`）返回提示："SKILL 已关闭，操作已忽略"
+- 后缀模式 `.../ustht ignore` 不受 SKILL_STATUS 控制，仍生效
 - 即时计划自动暂停，不识别用户想法
 
 ### 跨会话恢复
@@ -426,11 +427,12 @@ Agent：（正常回应，不记入想法——无项目相关内容）
 
 ```
 用户：/ustht
-Agent：可用命令：
-  /ustht status | skill [on|off] | instant [on|off]
-  /ustht sortin [--dry] | resort [--dry]
-  /ustht ignore | show | start | end | [--last]
-  /ustht raw | mdbase show | mdbase export
+Agent：可用命令（/user-thoughts 或 /ustht）：
+  init | status | skill [on|off] | instant [on|off]
+  sortin [--dry] | resort [--dry]
+  ignore [--last | show | start | end]
+  raw | mdbase show [--all|--维度名] | mdbase export [--all|--维度名]
+  import <路径>
 ```
 
 ### 33. 非法维度名 — 路径遍历

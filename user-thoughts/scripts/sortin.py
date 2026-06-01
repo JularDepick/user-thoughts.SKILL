@@ -74,6 +74,9 @@ def parse_entries(filepath: Path) -> list[dict]:
 
 def get_dim_file(mdbase: Path, dim: str) -> Path:
     """获取维度文件路径，支持子目录维度（如 ui/outline）。"""
+    # backlog 位于 mdbase 根目录，不在 details/ 下
+    if dim == "backlog":
+        return mdbase / "backlog.md"
     details = mdbase / "details"
     parts = dim.split("/")
     if len(parts) > 1:
@@ -83,11 +86,25 @@ def get_dim_file(mdbase: Path, dim: str) -> Path:
     return target
 
 
-def append_to_dim(dim_file: Path, entries: list[dict]):
+def get_dim_description(dim_name: str) -> str:
+    """返回维度的默认描述行。"""
+    descriptions = {
+        "rules": "用户对当前项目整体的规则性想法、约束、原则。",
+        "plans": "用户对当前项目整体的规划性想法、方向性决策。",
+        "general": "不属于其他维度的想法。",
+        "backlog": "用户的计划/待办事项。",
+    }
+    if dim_name in descriptions:
+        return descriptions[dim_name]
+    return f"用户关于 {dim_name} 的想法与决策。"
+
+
+def append_to_dim(dim_file: Path, entries: list[dict], dim_key: str = ""):
     """按日期分组追加条目到维度文件。
 
     若文件已有 `## date` 标题，在该日期块末尾插入新条目。
     若无该日期标题，在文件末尾追加新日期段落。
+    dim_key 为维度标识（如 ui/outline），用于生成文件标题。
     """
     # 按日期分组
     by_date: dict[str, list[str]] = {}
@@ -98,9 +115,10 @@ def append_to_dim(dim_file: Path, entries: list[dict]):
         by_date[date].append(f"- {e['text']}")
 
     if not dim_file.exists():
-        # 创建新文件
-        dim_name = dim_file.stem
-        lines = [f"# {dim_name}", ""]
+        # 创建新文件（标题 + 描述 + 内容）
+        dim_name = dim_key if dim_key else dim_file.stem
+        desc = get_dim_description(dim_file.stem)
+        lines = [f"# {dim_name}", "", f"> {desc}", ""]
         for date in sorted(by_date.keys()):
             lines.append(f"## {date}")
             lines.extend(by_date[date])
@@ -170,10 +188,20 @@ def update_index(mdbase: Path):
             count = sum(1 for l in content.splitlines() if l.strip().startswith("- "))
             dims.append((dim, count))
 
+    # backlog.md 位于 mdbase 根目录
+    backlog = mdbase / "backlog.md"
+    if backlog.exists():
+        content = backlog.read_text(encoding="utf-8")
+        count = sum(1 for l in content.splitlines() if l.strip().startswith("- "))
+        dims.append(("backlog", count))
+
     # 构建维度表格行
     table_rows = []
     for dim, count in dims:
-        table_rows.append(f"| [details/{dim}.md](details/{dim}.md) | {dim} | {count} 条 |")
+        if dim == "backlog":
+            table_rows.append(f"| [backlog.md](backlog.md) | 待办 | {count} 条 |")
+        else:
+            table_rows.append(f"| [details/{dim}.md](details/{dim}.md) | {dim} | {count} 条 |")
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -236,7 +264,15 @@ def update_index(mdbase: Path):
     ]
     for row in table_rows:
         lines.append(row)
-    lines.append("")
+    lines.extend([
+        "",
+        "---",
+        "",
+        "## 关键设计决策速查",
+        "",
+        "> 随着用户想法的积累，在此汇总最重要的设计决策及其所属文件，便于快速查阅。",
+        "",
+    ])
     readme.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -299,7 +335,13 @@ def main():
         dim_file = get_dim_file(mdbase, dim)
         exists = dim_file.exists()
         label = f"{dim}.md" if exists else f"{dim}.md [新建维度]"
-        print(f"  → {label}: +{len(entries)}")
+        previews = []
+        for e in entries[:3]:
+            text = e["text"]
+            preview = text[:20] + "…" if len(text) > 20 else text
+            previews.append(preview)
+        suffix = f"（{'；'.join(previews)}）" if previews else ""
+        print(f"  → {label}: +{len(entries)} 条{suffix}")
 
     if dry_run:
         print(f"  共 {len(all_entries)} 条，不实际写入。")
@@ -308,7 +350,7 @@ def main():
     # 执行：写入维度文件
     for dim, entries in by_dim.items():
         dim_file = get_dim_file(mdbase, dim)
-        append_to_dim(dim_file, entries)
+        append_to_dim(dim_file, entries, dim_key=dim)
 
     # 标记 raw 文件为已处理
     for f in unprocessed:

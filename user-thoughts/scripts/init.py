@@ -9,7 +9,7 @@ import sys
 import shutil
 from pathlib import Path
 
-from common import find_skill_dir
+from common import find_skill_dir, read_define_ini, write_define_ini
 
 HELP = """用法: python init.py [--help]
 
@@ -68,10 +68,20 @@ def main():
     for subdir in ["raw", "ignored", "export"]:
         (ustht / subdir).mkdir(exist_ok=True)
 
-    # 验证 define.ini
+    # 验证 define.ini 包含完整键值
     ini = ustht / "define.ini"
-    if not ini.exists():
-        ini.write_text("SKILL_STATUS=on\nINSTANT_STATUS=off\nLAST_SORTIN=\n", encoding="utf-8")
+    if ini.exists():
+        cfg = read_define_ini(ustht)
+        required_keys = ["SKILL_STATUS", "INSTANT_STATUS", "LAST_SORTIN"]
+        missing = [k for k in required_keys if k not in cfg]
+        if missing:
+            defaults = {"SKILL_STATUS": "on", "INSTANT_STATUS": "off", "LAST_SORTIN": ""}
+            for k in required_keys:
+                if k not in cfg:
+                    cfg[k] = defaults[k]
+            write_define_ini(ustht, cfg)
+    else:
+        write_define_ini(ustht, {"SKILL_STATUS": "on", "INSTANT_STATUS": "off", "LAST_SORTIN": ""})
 
     print("已初始化。")
     print(f"  .ustht/")
@@ -83,6 +93,13 @@ def main():
     print(f"      ├── README.ai.md")
     print(f"      ├── backlog.md")
     print(f"      └── details/ (rules, plans, dev-stack, general, ui/)")
+    print()
+    print("可用命令（/user-thoughts 或 /ustht）：")
+    print("  init | status | skill [on|off] | instant [on|off]")
+    print("  sortin [--dry] | resort [--dry]")
+    print("  ignore [--last | show | start | end]")
+    print("  raw | mdbase show [--all|--维度名] | mdbase export [--all|--维度名]")
+    print("  import <路径>")
 
 
 if __name__ == "__main__":

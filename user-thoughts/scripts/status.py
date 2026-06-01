@@ -21,7 +21,7 @@ HELP = """用法: python status.py [--help]
   SKILL_STATUS    技能启用状态 (on/off)
   INSTANT_STATUS  即时计划启用状态 (on/off)
   LAST_SORTIN     上次软维护时间
-  raw             未处理的 raw 文件数
+  raw             未处理的 raw 文件数（非条目数）
   dims            mdbase 维度文件数"""
 
 
